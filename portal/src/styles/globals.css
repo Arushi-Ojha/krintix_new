@@ -1,0 +1,180 @@
+@import "tailwindcss";
+
+@theme {
+  /* Obsidian Glass Directive Tokens */
+  --color-brand-obsidian: #131318;
+  --color-brand-orange: #F7C948; 
+  --color-brand-blue: #8083ff;   /* Kaba Primary */
+  --color-brand-cyan: #5de6ff;   /* Kaba Secondary */
+  
+  /* Surface Hierarchy (The "No-Line" Rule) */
+  --color-background: #131318;
+  --color-foreground: #e4e1e9;
+  
+  --color-surface-base: #131318;
+  --color-surface-low: #1b1b20;
+  --color-surface-mid: #1f1f25;
+  --color-surface-high: #2a292f;
+  
+  --color-text-muted: #908fa0;
+  --color-text-secondary: #c0bed1;
+  
+  /* Borders & Outlines (Ghost Borders) */
+  --color-border-ghost: rgba(144, 143, 160, 0.15);
+  
+  /* Typography */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-title: var(--font-syne), var(--font-outfit), var(--font-sans);
+
+  /* Light Mode Tokens (Alabaster System) */
+  --color-light-background: #f8f9fa;
+  --color-light-foreground: #131318;
+  --color-light-surface-base: #ffffff;
+  --color-light-surface-low: #f1f3f5;
+  --color-light-surface-mid: #e9ecef;
+  --color-light-surface-high: #dee2e6;
+  --color-light-text-muted: #4a4a55;
+  --color-light-text-secondary: #2c2c31;
+  --color-light-border: rgba(19, 19, 24, 0.12);
+}
+
+[data-theme="light"] {
+  --color-background: var(--color-light-background);
+  --color-foreground: var(--color-light-foreground);
+  --color-surface-base: var(--color-light-surface-base);
+  --color-surface-low: var(--color-light-surface-low);
+  --color-surface-mid: var(--color-light-surface-mid);
+  --color-surface-high: var(--color-light-surface-high);
+  --color-text-muted: var(--color-light-text-muted);
+  --color-text-secondary: var(--color-light-text-secondary);
+  --color-border-ghost: var(--color-light-border);
+}
+
+@layer base {
+  *, ::after, ::before {
+    border-color: var(--color-border-ghost);
+  }
+  
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--color-foreground);
+    @apply font-title font-bold tracking-tight;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+}
+
+/* Custom Utilities */
+@layer utilities {
+  .glass-artifact {
+    background: color-mix(in srgb, var(--color-surface-base) 70%, transparent);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--color-border-ghost);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
+  }
+
+  [data-theme="dark"] .glass-artifact {
+    background: color-mix(in srgb, var(--color-surface-mid) 40%, transparent);
+    /* Signature Gloss: Top-Left to Bottom-Right */
+    background-image: linear-gradient(135deg, color-mix(in srgb, var(--color-brand-blue) 10%, transparent) 0%, color-mix(in srgb, var(--color-brand-cyan) 5%, transparent) 100%);
+    box-shadow: none;
+  }
+  
+  .ghost-border {
+    border: 1px solid var(--color-border-ghost);
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-linear-to-r from-brand-orange via-white to-brand-orange;
+  }
+
+  /* Status Glow */
+  .status-glow {
+    position: relative;
+  }
+  .status-glow::before {
+    content: "";
+    position: absolute;
+    inset: -4px;
+    background: var(--color-brand-cyan);
+    filter: blur(8px);
+    opacity: 0.3;
+    border-radius: 9999px;
+    z-index: -1;
+  }
+
+  .font-wide {
+    @apply font-title font-bold;
+    letter-spacing: -0.02em;
+    font-stretch: 110%;
+  }
+
+  .section-padding {
+    @apply py-32 px-6 lg:py-48 lg:px-12;
+  }
+
+  .asymmetrical-layout {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 4rem;
+  }
+
+  /* Utility: hide scrollbars for the carousel */
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Utility: clamp preview lines with ellipsis */
+  .line-clamp-preview {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Logo: morphs with data-theme (instant correct paint + smooth toggle) */
+  .brand-logo-mark {
+    transition: filter 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  [data-theme="light"] .brand-logo-mark {
+    filter: brightness(0) saturate(100%);
+  }
+  [data-theme="dark"] .brand-logo-mark {
+    filter: brightness(1) saturate(100%);
+  }
+  [data-theme="light"] .brand-logo-mark:hover {
+    filter: brightness(0) saturate(100%)
+      drop-shadow(0 0 14px color-mix(in srgb, var(--color-brand-orange) 72%, transparent));
+  }
+  [data-theme="dark"] .brand-logo-mark:hover {
+    filter: brightness(1) saturate(100%)
+      drop-shadow(0 0 16px color-mix(in srgb, var(--color-brand-orange) 78%, transparent));
+  }
+
+  @keyframes krintix-drift {
+    0%,
+    100% {
+      transform: translate(-50%, -50%) scale(1);
+    }
+    40% {
+      transform: translate(-48%, -53%) scale(1.05);
+    }
+    70% {
+      transform: translate(-52%, -47%) scale(1.02);
+    }
+  }
+
+  .animate-krintix-drift {
+    animation: krintix-drift 20s ease-in-out infinite;
+  }
+}
